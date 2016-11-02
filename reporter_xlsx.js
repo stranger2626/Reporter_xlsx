@@ -29,7 +29,7 @@ var reporter_xlsx = function(options) {
             return spec.status;
         });
         statuses = _.uniq(statuses);
-        var status = statuses.indexOf('Failed') >= 0 ? 'Failed' : statuses.join(', ');
+        var status = statuses.indexOf('failed') >= 0 ? 'failed' : statuses.join(', ');
         _currentSuite.status = status;
         log('Suite ' + _currentSuite.status + ': ' + suite.description, -1);
     };
@@ -41,7 +41,7 @@ var reporter_xlsx = function(options) {
     this.specDone = function(spec) {
         var currentSpec = {
             description: spec.description,
-            status: spec.statuses
+            status: spec.status
         };
         if (spec.failedExpectations.length > 0) {
             currentSpec.failedExpectations = spec.failedExpectations;
@@ -54,19 +54,26 @@ var reporter_xlsx = function(options) {
     this.jasmineDone = function() {
         outputFile = options.outputFile;
         var output = formatOutput(_root);
-        wb.write(options.outputFile);
     };
 
     function formatOutput(output) {
-        var indent = '  ';
-        var pad = '  ';
-        var results = [];
         ws.cell(2,1).string('AppDir:' + output.appDir);
         var i = 3;
         output.suites.forEach(function(suite) {
-            ws.cell(2,1).string(pad + 'Suite: ' + suite.description + ' -- ' + suite.status);
+            ws.cell(i,1).string('Suite:');
+            ws.cell(i,2).string(suite.description );
+            ws.cell(i,3).string(suite.status);
             i++;
-
+            suite.specs.forEach(function(spec) {
+                ws.cell(i,2).string(spec.status);
+                ws.cell(i,3).string(spec.description).style({ alignment: {wrapText: true} });
+                if (spec.failedExpectations) {
+                    spec.failedExpectations.forEach(function (fe) {
+                        ws.cell(i,4).string('message: ' + fe.message).style({alignment: {wrapText: true}});
+                    });
+                }
+                i++;
+            });
         });
         return wb.write(options.outputFile);
     }
@@ -91,7 +98,7 @@ var reporter_xlsx = function(options) {
     function initOutputFile(outputFile) {
         ensureDirectoryExistence(outputFile);
         var header = "Protractor results for: " + (new Date()).toLocaleString() + "\n\n";
-        ws.cell(1,1).string(header);
+        ws.cell(1,1,1,4, true).string(header);
         wb.write(options.outputFile);
     }
     // for console output
