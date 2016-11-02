@@ -1,7 +1,7 @@
 {
   "name": "reporter-xlsx",
   "version": "1.0.0",
-  "main": "reporter-xlsx.js",
+  "main": "reporter_xlsx.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
