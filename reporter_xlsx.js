@@ -4,7 +4,7 @@ var _ = require('lodash');
 var xl = require('excel4node');
 
 // Custom reporter
-var reporter_xlsx = function(options) {
+var Reporter_xlsx = function(options) {
 
     var wb = new xl.Workbook();
     var ws = wb.addWorksheet('Sheet 1');
@@ -115,5 +115,5 @@ var reporter_xlsx = function(options) {
     }
 };
 
-module.exports = reporter_xlsx;
+module.exports = Reporter_xlsx;
 
