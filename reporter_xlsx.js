@@ -45,9 +45,14 @@ var Reporter_xlsx = function(options) {
         if (spec.failedExpectations.length > 0) {
             currentSpec.failedExpectations = spec.failedExpectations;
         }
-
         _currentSuite.specs.push(currentSpec);
         log(spec.status + ' - ' + spec.description);
+            var testName = spec.description;    
+            browser.takeScreenshot().then((base64png) => {
+            let stream = fs.createWriteStream(testName + '.png');
+            stream.write(new Buffer(base64png, 'base64'));
+            stream.end();
+            });
     };
 
     this.jasmineDone = function() {
