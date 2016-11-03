@@ -12,7 +12,6 @@ var Reporter_xlsx = function(options) {
     var _defaultOutputFile = path.resolve(process.cwd(), './_test-output', 'excel.xlsx');
     options.outputFile = options.outputFile || _defaultOutputFile;
 
-    initOutputFile(options.outputFile);
     options.appDir = options.appDir ||  './';
     var _root = { appDir: options.appDir, suites: [] };
     log('AppDir: ' + options.appDir, +1);
@@ -53,7 +52,9 @@ var Reporter_xlsx = function(options) {
 
     this.jasmineDone = function() {
         outputFile = options.outputFile;
-        var output = formatOutput(_root);
+        //var output = formatOutput(_root);
+        initOutputFile(options.outputFile);
+       //fs.appendFile(outputFile, output);
     };
 
     function formatOutput(output) {
@@ -75,7 +76,7 @@ var Reporter_xlsx = function(options) {
                 i++;
             });
         });
-        return wb.write(options.outputFile);
+        // return wb.write(options.outputFile);
     }
     function ensureDirectoryExistence(filePath) {
         var dirname = path.dirname(filePath);
@@ -99,6 +100,7 @@ var Reporter_xlsx = function(options) {
         ensureDirectoryExistence(outputFile);
         var header = "Protractor results for: " + (new Date()).toLocaleString() + "\n\n";
         ws.cell(1,1,1,4, true).string(header);
+        formatOutput(_root);
         wb.write(options.outputFile);
     }
     // for console output
